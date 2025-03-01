@@ -1,0 +1,153 @@
+// Pin Assignments
+const int button = A4 , leftDigitPower = 2 , rightDigitPower = 3 , win = A5 ;
+int writePin1 , writePin2 , writePin3 , writePin4 , writePin5 , writePin6 , writePin7
+;
+int leftDigit = 0 , rightDigit = 0 , currentDigit = 0;
+boolean lastButtonPress = LOW ;
+boolean currentButtonPress = LOW ;
+void setup () {
+Serial . begin (9600) ;
+// enable both digits
+pinMode ( leftDigitPower , OUTPUT ) ;
+pinMode ( rightDigitPower , OUTPUT ) ;
+digitalWrite ( leftDigitPower , HIGH ) ;
+digitalWrite ( rightDigitPower , HIGH ) ;
+pinMode ( win , OUTPUT ) ;
+pinMode ( button , INPUT ) ;
+digitalWrite ( win , LOW ) ;
+digitalWrite ( button , LOW ) ;
+pinMode ( A0 , OUTPUT ) ;
+pinMode ( A1 , OUTPUT ) ;
+pinMode ( A2 , OUTPUT ) ;
+pinMode ( A3 , OUTPUT ) ;
+digitalWrite ( A0 , HIGH ) ;
+digitalWrite ( A1 , HIGH ) ;
+digitalWrite ( A2 , HIGH ) ;
+digitalWrite ( A3 , HIGH ) ;
+for ( int i = 4; i < 14; i ++) {
+pinMode (i , OUTPUT ) ;
+digitalWrite (i , HIGH ) ;
+}
+}
+boolean debounce ( int button , boolean last ) {
+boolean current = digitalRead ( button ) ; // Read the button state
+// Serial . print ( current ) ; Serial . print (" ") ; Serial . print ( last ) ; Serial . print
+("\ n ") ;
+if ( last != current ) // if it ’s different ...
+{
+delay (5) ; // wait 5 ms
+current = digitalRead ( button ) ; // read it again
+}
+return current ; // return the current value
+3
+}
+void writeLeft () {
+writePin1 = 6; // 16
+writePin2 = 7; // 15
+writePin3 = 15; // 3
+writePin4 = 16; // 2
+writePin5 = 17; // 1
+writePin6 = 4; // 18
+writePin7 = 5; // 17
+currentDigit = leftDigit ;
+}
+void writeRight () {
+writePin1 = 9; // 11
+writePin2 = 10; // 10
+writePin3 = 11; // 8
+writePin4 = 13; // 6
+writePin5 = 14; // 5
+writePin6 = 8; // 12
+writePin7 = 12; // 7
+currentDigit = rightDigit ;
+}
+void write () {
+if ( currentDigit == 0) {
+digitalWrite ( writePin1 , LOW ) ;
+digitalWrite ( writePin2 , LOW ) ;
+digitalWrite ( writePin3 , LOW ) ;
+digitalWrite ( writePin4 , LOW ) ;
+digitalWrite ( writePin5 , LOW ) ;
+digitalWrite ( writePin6 , LOW ) ;
+}
+else if ( currentDigit == 1) {
+digitalWrite ( writePin2 , LOW ) ;
+digitalWrite ( writePin3 , LOW ) ;
+}
+else if ( currentDigit == 2) {
+digitalWrite ( writePin1 , LOW ) ;
+digitalWrite ( writePin2 , LOW ) ;
+digitalWrite ( writePin4 , LOW ) ;
+digitalWrite ( writePin5 , LOW ) ;
+digitalWrite ( writePin7 , LOW ) ;
+}
+else if ( currentDigit == 3) {
+digitalWrite ( writePin1 , LOW ) ;
+digitalWrite ( writePin2 , LOW ) ;
+digitalWrite ( writePin3 , LOW ) ;
+digitalWrite ( writePin4 , LOW ) ;
+digitalWrite ( writePin7 , LOW ) ;
+}
+else if ( currentDigit == 4) {
+digitalWrite ( writePin2 , LOW ) ;
+digitalWrite ( writePin3 , LOW ) ;
+digitalWrite ( writePin6 , LOW ) ;
+digitalWrite ( writePin7 , LOW ) ;
+}
+else if ( currentDigit == 5) {
+digitalWrite ( writePin1 , LOW ) ;
+digitalWrite ( writePin3 , LOW ) ;
+4
+digitalWrite ( writePin4 , LOW ) ;
+digitalWrite ( writePin6 , LOW ) ;
+digitalWrite ( writePin7 , LOW ) ;
+}
+else if ( currentDigit == 6) {
+digitalWrite ( writePin1 , LOW ) ;
+digitalWrite ( writePin3 , LOW ) ;
+digitalWrite ( writePin4 , LOW ) ;
+digitalWrite ( writePin5 , LOW ) ;
+digitalWrite ( writePin6 , LOW ) ;
+digitalWrite ( writePin7 , LOW ) ;
+}
+else if ( currentDigit == 7) {
+digitalWrite ( writePin1 , LOW ) ;
+digitalWrite ( writePin2 , LOW ) ;
+digitalWrite ( writePin3 , LOW ) ;
+}
+else if ( currentDigit == 8) {
+digitalWrite ( writePin1 , LOW ) ;
+digitalWrite ( writePin2 , LOW ) ;
+digitalWrite ( writePin3 , LOW ) ;
+digitalWrite ( writePin4 , LOW ) ;
+digitalWrite ( writePin5 , LOW ) ;
+digitalWrite ( writePin6 , LOW ) ;
+digitalWrite ( writePin7 , LOW ) ;
+}
+else if ( currentDigit == 9) {
+digitalWrite ( writePin1 , LOW ) ;
+digitalWrite ( writePin2 , LOW ) ;
+digitalWrite ( writePin3 , LOW ) ;
+digitalWrite ( writePin4 , LOW ) ;
+digitalWrite ( writePin6 , LOW ) ;
+digitalWrite ( writePin7 , LOW ) ;
+}
+}
+void loop () {
+currentButtonPress = debounce ( button , lastButtonPress ) ;
+// Serial . print ( currentButtonPress ) ; Serial . print ("\ n ") ;
+if ( lastButtonPress == LOW && currentButtonPress == HIGH ) {
+for ( int i = 4; i < 20; i ++) digitalWrite (i , HIGH ) ;
+digitalWrite ( win , LOW ) ;
+randomSeed ( millis () ) ;
+leftDigit = random (0 ,10) ;
+rightDigit = random (0 ,10) ;
+Serial . print ( leftDigit ) ; Serial . print ( rightDigit ) ; Serial . print ( " \ n " ) ;
+writeLeft () ;
+write () ;
+writeRight () ;
+write () ;
+if ( leftDigit == rightDigit ) digitalWrite ( win , HIGH ) ;
+}
+lastButtonPress = currentButtonPress ;
+}
